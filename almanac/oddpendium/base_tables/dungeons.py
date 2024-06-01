@@ -1,0 +1,25 @@
+import random
+
+def roll_feature():
+    features = [
+        "Weird Generator", "Corpse Pit", "Corpse Pit", "Corpse Pit", "Corpse Pit", "Abyssal Chasm", "Abyssal Chasm", "Abyssal Chasm", "Labyrinth", "Murder Shrine", "Murder Shrine", "Murder Shrine", "Flowing Filth", "Flowing Filth", "Sealed Vault", "Sealed Vault", "Bunker", "Bunker", "Dirt Hole", "Dirt Hole", "Crumbling Chapel", "Crumbling Chapel", "Crumbling Chapel", "Crumbling Chapel", "Art Gallery", "Art Gallery", "Art Gallery", "Forge", "Forge", "Forge", "Office", "Office", "Torture Chamber", "Torture Chamber", "Feast Hall", "Feast Hall", "Military Tomb", "Military Tomb", "Ancient Barrow", "Ancient Barrow", "Cult Catacomb", "Cult Catacomb", "Fighting Pit", "Fighting Pit", "Well", "Well", "Drinking Hole", "Drinking Hole", "Crystal Cave", "Crystal Cave", "Prison", "Prison", "Natural Spring", "Natural Spring", "Natural Spring", "Open Vault", "Open Vault", "Open Vault", "Open Vault", "Flooded Sewer", "Flooded Sewer", "Abandoned Tramway", "Abandoned Tramway", "Gun Workshop", "Gun Workshop", "Gunpowder Store", "Gunpowder Store", "Dog Pit", "Dog Pit", "Alchemy Lab", "Alchemy Lab", "Printing Press", "Printing Press", "Metal Sphere", "Metal Sphere", "Underground Lake", "Underground Lake", "Throne Room", "Throne Room", "Armoury", "Armoury", "Swimming Pool", "Swimming Pool", "Observatory", "Observatory"
+    ]
+    return random.choice(features)
+
+def roll_hazard():
+    hazards = [
+        "Bell Alarm", "Searing Hot Walls", "Searing Hot Walls", "Searing Hot Walls", "Searing Hot Walls", "Glass Snakes", "Glass Snakes", "Glass Snakes", "Crawling Eyes", "Acid Puddles", "Acid Puddles", "Acid Puddles", "Tunnel Shark", "Tunnel Shark", "Crushing Walls", "Crushing Walls", "Taunting Voices", "Taunting Voices", "Hidden Spikes", "Hidden Spikes", "Slime Drones", "Slime Drones", "Slime Drones", "Slime Drones", "Carnivorous Birds", "Carnivorous Birds", "Carnivorous Birds", "Insane Babbling", "Insane Babbling", "Insane Babbling", "Insane Soldier", "Insane Soldier", "Deafening Siren", "Deafening Siren", "Devouring Maw", "Devouring Maw", "Grasping Tentacles", "Grasping Tentacles", "Questioning Brain", "Questioning Brain", "Huge Beast", "Huge Beast", "Collapsing Floor", "Collapsing Floor", "Shifting Illusions", "Shifting Illusions", "Stone Automatons", "Stone Automatons", "Incineration Pit", "Incineration Pit", "Living Chains", "Living Chains", "Cursing Hag", "Cursing Hag", "Cursing Hag", "Frightened Cat", "Frightened Cat", "Frightened Cat", "Frightened Cat", "Holographic Spiders", "Holographic Spiders", "Gusts of Wind", "Gusts of Wind", "Ghostly Hands", "Ghostly Hands", "Dust Tornadoes", "Dust Tornadoes", "Acidic Ooze", "Acidic Ooze", "Freeze-Rays", "Freeze-Rays", "Shifting Blocks", "Shifting Blocks", "All-Seeing Eye", "All-Seeing Eye", "Mechanical Judge", "Mechanical Judge", "Angry Mutants", "Angry Mutants", "Rival Explorers", "Rival Explorers", "Impenetrable Shadow", "Impenetrable Shadow", "Blinding Lights", "Blinding Lights"
+    ]
+    return random.choice(hazards)
+
+def roll_spoils():
+    spoils = [
+        "Golden Throne (30g)", "Locked Chest (10g)", "Locked Chest (10g)", "Locked Chest (10g)", "Glowing Rod (inanimate, 10s)", "Glowing Rod (inanimate, 10s)", "Glowing Rod (inanimate, 10s)", "d6 Crocodile Eggs", "Diamond Ring (2s)", "Diamond Ring (2s)", "Diamond Ring (2s)", "Looking Glass", "Looking Glass", "Town Crier Bell", "Town Crier Bell", "Unnaturally Bright Lantern", "Unnaturally Bright Lantern", "Opal Brooch (2s)", "Opal Brooch (2s)", "Black Gem (1g)", "Black Gem (1g)", "Telescope", "Telescope", "Sack of Coal", "Sack of Coal", "Sack of Coal", "Symbolic Dagger", "Symbolic Dagger", "Symbolic Dagger", "Symbolic Dagger", "Astral Pistol", "Astral Pistol", "Musket", "Musket", "Wicker Ball", 
+        "Wicker Ball", "Hammers and other Tools", "Hammers and other Tools", "Feathered Headband", "Feathered Headband", "Leather Bracers (falling apart)", "Leather Bracers (falling apart)", "Flute (silver, 50s)", "Flute (silver, 50s)", "Flute (silver, 50s)", "Huge Drum", "Huge Drum", "Huge Drum", "Blood Soaked Rags", "Blood Soaked Rags", "Blood Soaked Rags", "Hand Mirror", "Hand Mirror", "Audacious Painting", "Audacious Painting", "Metal Staff", "Metal Staff", "Set of Modern Armour", "Set of Modern Armour", "Set of Modern Armour", "Modern Armour", 
+        "Modern Armour", "Modern Armour", "Modern Armour", "Shield Armour", "Shield Armour", "Shield Armour", 
+        "Shield Armour", "White Boulder", "White Boulder", "Drinking Horn", "Drinking Horn", "Beast Tusk (50s)", "Beast Tusk (50s)", "Glowing Sword (ignores Armour)", "Glowing Sword (ignores Armour)", "Stone Tablet (gibberish)", "Stone Tablet (gibberish)", "Engine Parts", "Engine Parts", "Anvil", "Anvil", "Dice (twelve-sided)", "Dice (twelve-sided)", "Glass Chains (oddly warm)", "Glass Chains (oddly warm)", "Cannon (in need of repair)", "Cannon (in need of repair)", "Dead Dog"
+    ]
+    return random.choice(spoils)
+
+# Example usage
+print("Spoils:", roll_spoils())

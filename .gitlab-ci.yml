@@ -1,0 +1,22 @@
+
+image: docker:dind
+stages:
+  - build
+  - deploy
+
+models-package-build:
+  stage: build
+  image: python
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - apt-get update
+    - BUILD_DEPS='g++ gcc git make build-essential'
+    - apt-get install -y $BUILD_DEPS --no-install-recommends
+    - apt-get install build-essential
+    - pip install twine
+    - python setup.py sdist bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/* --verbose
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
