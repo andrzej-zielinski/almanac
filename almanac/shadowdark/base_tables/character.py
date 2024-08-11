@@ -1,10 +1,19 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
+from enum import Enum, auto
+
+class SHADOWDARK_ANCESTRY(Enum):
+    DWARF = auto()
+    ELF = auto()
+    GOBLIN = auto()
+    HALF_ORC = auto()
+    HALFLING = auto()
+    HUMAN = auto()
 
 @dataclass
 class SHADOWDARK_CHARACTER:
     name: str
-    ancestry: str
+    _ancestry: SHADOWDARK_ANCESTRY
     character_class: str
     level: int = 0
     xp: int = 0
@@ -13,7 +22,6 @@ class SHADOWDARK_CHARACTER:
     title: str = "Novice"
     background: str
     
-    # Raw stat values
     _strength: int = field(default=10)
     _dexterity: int = field(default=10)
     _constitution: int = field(default=10)
@@ -32,6 +40,8 @@ class SHADOWDARK_CHARACTER:
     
     gear_slots: int = field(init=False)
     spell_slots: Dict[str, int] = field(default_factory=dict)
+    languages: List[str] = field(default_factory=list)
+    traits: List[str] = field(default_factory=list)
 
     def __post_init__(self):
         self.gear_slots = max(10, self._strength)
@@ -124,6 +134,51 @@ class SHADOWDARK_CHARACTER:
         
     def heal(self, amount: int):
         self.hp = min(self.max_hp, self.hp + amount)
+        self.apply_ancestry_traits()
+
+    @property
+    def ancestry(self) -> SHADOWDARK_ANCESTRY:
+        return self._ancestry
+
+    @ancestry.setter
+    def ancestry(self, value: SHADOWDARK_ANCESTRY):
+        self._ancestry = value
+        self.apply_ancestry_traits()
+
+    def apply_ancestry_traits(self):
+        # Reset languages and traits
+        self.languages = ["Common"]
+        self.traits = []
+
+        if self._ancestry == SHADOWDARK_ANCESTRY.DWARF:
+            self.languages.append("Dwarvish")
+            self.traits.append("Stout: Start with +2 HP. Roll hit points per level with advantage.")
+            self.max_hp += 2
+            self.hp += 2
+
+        elif self._ancestry == SHADOWDARK_ANCESTRY.ELF:
+            self.languages.extend(["Elvish", "Sylvan"])
+            self.traits.append("Farsight: +1 bonus to attack rolls with ranged weapons or +1 bonus to spellcasting checks.")
+
+        elif self._ancestry == SHADOWDARK_ANCESTRY.GOBLIN:
+            self.languages.append("Goblin")
+            self.traits.append("Keen Senses: You can't be surprised.")
+
+        elif self._ancestry == SHADOWDARK_ANCESTRY.HALF_ORC:
+            self.languages.append("Orcish")
+            self.traits.append("Mighty: +1 bonus to attack and damage rolls with melee weapons.")
+
+        elif self._ancestry == SHADOWDARK_ANCESTRY.HALFLING:
+            self.traits.append("Stealthy: Once per day, you can become invisible for 3 rounds.")
+
+        elif self._ancestry == SHADOWDARK_ANCESTRY.HUMAN:
+            self.traits.append("Ambitious: You gain one additional talent roll at 1st level.")
+            # For simplicity, we'll add a random language here. In a real game, you'd want the player to choose.
+            import random
+            additional_languages = ["Dwarvish", "Elvish", "Goblin", "Orcish", "Sylvan"]
+            self.languages.append(random.choice(additional_languages))
+
+    # ... (rest of the methods from the previous version)
 
     def roll_stats(self):
         import random
@@ -131,7 +186,6 @@ class SHADOWDARK_CHARACTER:
         for stat in stats:
             setattr(self, f"_{stat}", sum(random.randint(1, 6) for _ in range(3)))
         
-        # Check if any stat is 14 or higher
         if not any(getattr(self, f"_{stat}") >= 14 for stat in stats):
             print("No stat 14 or higher. Rolling again...")
             self.roll_stats()
@@ -140,7 +194,7 @@ class SHADOWDARK_CHARACTER:
 if __name__ == "__main__":
     character = SHADOWDARK_CHARACTER(
         name="Alric the Bold",
-        ancestry="Human",
+        _ancestry=SHADOWDARK_ANCESTRY.HUMAN,
         character_class="Fighter",
         background="Soldier",
         hp=10,
@@ -151,14 +205,21 @@ if __name__ == "__main__":
     character.roll_stats()
     
     print(f"Character created: {character.name}")
+    print(f"Ancestry: {character.ancestry.name}")
     print(f"Class: {character.character_class}")
     print(f"HP: {character.hp}/{character.max_hp}")
+    print(f"Languages: {', '.join(character.languages)}")
+    print(f"Traits: {', '.join(character.traits)}")
     print(f"Gear slots: {character.gear_slots}")
     
     for stat in ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']:
         stat_info = getattr(character, stat)
         print(f"{stat.capitalize()}: {stat_info['value']} (Modifier: {stat_info['modifier']})")
     
-    character.add_gear("Longsword")
-    character.add_gear("Shield")
-    print(f"Gear: {', '.join(character.gear)}")
+    # Changing ancestry to demonstrate the setter
+    print("\nChanging ancestry to Dwarf:")
+    character.ancestry = SHADOWDARK_ANCESTRY.DWARF
+    print(f"New Ancestry: {character.ancestry.name}")
+    print(f"HP: {character.hp}/{character.max_hp}")
+    print(f"Languages: {', '.join(character.languages)}")
+    print(f"Traits: {', '.join(character.traits)}")
