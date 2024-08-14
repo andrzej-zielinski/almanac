@@ -35,7 +35,7 @@ class Defenses(Enum):
 class Steading:
     name: str
     location: str
-    size: str
+    size: SteadingSize
     prosperity: Prosperity
     population: Population
     defenses: Defenses
@@ -50,7 +50,7 @@ class Steading:
         self.relations[relation_type] = steadings
 
     def __str__(self):
-        return f"""**Steading - {self.name}** - {self.size}
-*{self.prosperity.name}*, *{self.population.name}*, *{self.defenses.name}*, {", ".join([f"*{t}*" for t in self.tags])}, {(", ".join(f"*{k}({', '.join([r for r in v])})*" for k, v in self.relations.items()))
+        return f"""**Steading - {self.name}** - {self.size.name} ({self.size.value})
+*{self.prosperity.name} ({self.prosperity.value})*, *{self.population.name} ({self.population.value})*, *{self.defenses.name} ({self.defenses.value})*, {", ".join([f"*{t}*" for t in self.tags])}, {(", ".join(f"*{k}({', '.join([r for r in v])})*" for k, v in self.relations.items()))
 }
 """
