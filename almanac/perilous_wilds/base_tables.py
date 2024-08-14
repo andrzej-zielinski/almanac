@@ -762,7 +762,7 @@ def generate_city(ruination: str = None):
     size = SteadingSize.City
     prosperity = Prosperity.Moderate
     population = Population.Steady
-    defenses = Defenses.GUARD
+    defenses = Defenses.Guard
     tags = ["Market", "Guild (GM's choice)"]
     relations = {"Oath": ["Steading 1 of GM's choice", "Steading 2 of GM's choice"]}  # Multiple oaths to various steadings
 
