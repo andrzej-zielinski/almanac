@@ -2,6 +2,37 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 from enum import Enum, auto
 
+from enum import Enum
+import random
+
+class SHADOWDARK_BACKGROUND(Enum):
+    URCHIN = ("Urchin", "You grew up in the merciless streets of a large city")
+    WANTED = ("Wanted", "There's a price on your head, but you have allies")
+    CULT_INITIATE = ("Cult Initiate", "You know blasphemous secrets and rituals")
+    THIEVES_GUILD = ("Thieves' Guild", "You have connections, contacts, and debts")
+    BANISHED = ("Banished", "Your people cast you out for supposed crimes")
+    ORPHANED = ("Orphaned", "An unusual guardian rescued and raised you")
+    WIZARDS_APPRENTICE = ("Wizard's Apprentice", "You have a knack and eye for magic")
+    JEWELER = ("Jeweler", "You can easily appraise value and authenticity")
+    HERBALIST = ("Herbalist", "You know plants, medicines, and poisons")
+    BARBARIAN = ("Barbarian", "You left the horde, but it never quite left you")
+    MERCENARY = ("Mercenary", "You fought friend and foe alike for your coin")
+    SAILOR = ("Sailor", "Pirate, privateer, or merchant — the seas are yours")
+    ACOLYTE = ("Acolyte", "You're well trained in religious rites and doctrines")
+    SOLDIER = ("Soldier", "You served as a fighter in an organized army")
+    RANGER = ("Ranger", "The woods and wilds are your true home")
+    SCOUT = ("Scout", "You survived on stealth, observation, and speed")
+    MINSTREL = ("Minstrel", "You've traveled far with your charm and talent")
+    SCHOLAR = ("Scholar", "You know much about ancient history and lore")
+    NOBLE = ("Noble", "A famous name has opened many doors for you")
+    CHIRURGEON = ("Chirurgeon", "You know anatomy, surgery, and first aid")
+
+    def __init__(self, title, description):
+        self.title = title
+        self.description = description
+
+
+
 class SHADOWDARK_ANCESTRY(Enum):
     DWARF = auto()
     ELF = auto()
@@ -10,18 +41,29 @@ class SHADOWDARK_ANCESTRY(Enum):
     HALFLING = auto()
     HUMAN = auto()
 
+class SHADOWDARK_CLASS(Enum):
+    FIGHTER = auto()
+    PRIEST = auto()
+    THIEF = auto()
+    WIZARD = auto()
+    BARD = auto()
+    RANGER = auto()
+
 @dataclass
 class SHADOWDARK_CHARACTER:
     name: str
+    background: SHADOWDARK_BACKGROUND    
     _ancestry: SHADOWDARK_ANCESTRY
-    character_class: str
+    _character_class: SHADOWDARK_CLASS
+        
+    hp: int
+    max_hp: int
+    ac: int
     level: int = 0
     xp: int = 0
     alignment: str = "Neutral"
     deity: Optional[str] = None
     title: str = "Novice"
-    background: str
-    
     _strength: int = field(default=10)
     _dexterity: int = field(default=10)
     _constitution: int = field(default=10)
@@ -42,9 +84,13 @@ class SHADOWDARK_CHARACTER:
     spell_slots: Dict[str, int] = field(default_factory=dict)
     languages: List[str] = field(default_factory=list)
     traits: List[str] = field(default_factory=list)
+    class_features: List[str] = field(default_factory=list)
 
     def __post_init__(self):
         self.gear_slots = max(10, self._strength)
+
+    def random_background() -> SHADOWDARK_BACKGROUND:
+        return random.choice(list(SHADOWDARK_BACKGROUND))
 
     @staticmethod
     def calculate_modifier(stat: int) -> int:
@@ -135,7 +181,8 @@ class SHADOWDARK_CHARACTER:
     def heal(self, amount: int):
         self.hp = min(self.max_hp, self.hp + amount)
         self.apply_ancestry_traits()
-
+        self.apply_class_features()
+        
     @property
     def ancestry(self) -> SHADOWDARK_ANCESTRY:
         return self._ancestry
@@ -190,12 +237,91 @@ class SHADOWDARK_CHARACTER:
             print("No stat 14 or higher. Rolling again...")
             self.roll_stats()
 
+    @property
+    def character_class(self) -> SHADOWDARK_CLASS:
+        return self._character_class
+
+    @character_class.setter
+    def character_class(self, value: SHADOWDARK_CLASS):
+        self._character_class = value
+        self.apply_class_features()
+
+    def apply_class_features(self):
+        self.class_features = []
+        
+        if self._character_class == SHADOWDARK_CLASS.FIGHTER:
+            self.class_features.extend([
+                "Weapons: All weapons",
+                "Armor: All armor and shields",
+                "Hit Points: 1d8 per level",
+                "Hauler: Add Constitution modifier to gear slots if positive",
+                "Weapon Mastery: +1 to attack and damage with chosen weapon type",
+                "Grit: Advantage on Strength or Dexterity checks to overcome opposing force"
+            ])
+            self.gear_slots += max(0, self.constitution['modifier'])
+
+        elif self._character_class == SHADOWDARK_CLASS.PRIEST:
+            self.class_features.extend([
+                "Weapons: Club, crossbow, dagger, mace, longsword, staff, warhammer",
+                "Armor: All armor and shields",
+                "Hit Points: 1d6 per level",
+                "Languages: You know Celestial, Diabolic, or Primordial",
+                "Turn Undead: You know the turn undead spell",
+                "Deity: Choose a god to serve",
+                "Spellcasting: You can cast priest spells"
+            ])
+            self.languages.append("Celestial")  # Default, could be chosen
+
+        elif self._character_class == SHADOWDARK_CLASS.THIEF:
+            self.class_features.extend([
+                "Weapons: Club, crossbow, dagger, shortbow, shortsword",
+                "Armor: Leather armor, mithral chainmail",
+                "Hit Points: 1d4 per level",
+                "Backstab: Extra damage on unaware targets",
+                "Thievery: Advantage on thieving skills"
+            ])
+
+        elif self._character_class == SHADOWDARK_CLASS.WIZARD:
+            self.class_features.extend([
+                "Weapons: Dagger, staff",
+                "Armor: None",
+                "Hit Points: 1d4 per level",
+                "Languages: You know two additional common languages and two rare languages",
+                "Learning Spells: Can learn spells from scrolls",
+                "Spellcasting: You can cast wizard spells"
+            ])
+            self.languages.extend(["Common", "Common", "Rare", "Rare"])  # Placeholder
+
+        elif self._character_class == SHADOWDARK_CLASS.BARD:
+            self.class_features.extend([
+                "Weapons: Crossbow, dagger, mace, shortbow, shortsword, spear, staff",
+                "Armor: Leather armor, chainmail, shields",
+                "Hit Points: 1d6 per level",
+                "Languages: You know four additional common languages and one rare language",
+                "Bardic Arts: Trained in oration, performing arts, lore, and diplomacy",
+                "Magical Dabbler: Can activate spell scrolls and wands using Charisma",
+                "Presence: Inspire or Fascinate",
+                "Prolific: Add 1d6 to learning rolls"
+            ])
+            self.languages.extend(["Common", "Common", "Common", "Common", "Rare"])
+
+        elif self._character_class == SHADOWDARK_CLASS.RANGER:
+            self.class_features.extend([
+                "Weapons: Dagger, longbow, longsword, shortbow, shortsword, spear, staff",
+                "Armor: Leather armor, chainmail",
+                "Hit Points: 1d8 per level",
+                "Wayfinder: Advantage on navigation, tracking, bushcraft, stealth, and wild animals",
+                "Herbalism: Can prepare herbal remedies"
+            ])
+
+    # ... (other methods remain unchanged)
+
 # Example usage
 if __name__ == "__main__":
     character = SHADOWDARK_CHARACTER(
         name="Alric the Bold",
         _ancestry=SHADOWDARK_ANCESTRY.HUMAN,
-        character_class="Fighter",
+        _character_class=SHADOWDARK_CLASS.FIGHTER,
         background="Soldier",
         hp=10,
         max_hp=10,
@@ -206,20 +332,31 @@ if __name__ == "__main__":
     
     print(f"Character created: {character.name}")
     print(f"Ancestry: {character.ancestry.name}")
-    print(f"Class: {character.character_class}")
+    print(f"Class: {character.character_class.name}")
     print(f"HP: {character.hp}/{character.max_hp}")
     print(f"Languages: {', '.join(character.languages)}")
-    print(f"Traits: {', '.join(character.traits)}")
+    print(f"Ancestry Traits: {', '.join(character.traits)}")
+    print(f"Class Features: {', '.join(character.class_features)}")
     print(f"Gear slots: {character.gear_slots}")
     
     for stat in ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']:
         stat_info = getattr(character, stat)
         print(f"{stat.capitalize()}: {stat_info['value']} (Modifier: {stat_info['modifier']})")
     
-    # Changing ancestry to demonstrate the setter
-    print("\nChanging ancestry to Dwarf:")
-    character.ancestry = SHADOWDARK_ANCESTRY.DWARF
-    print(f"New Ancestry: {character.ancestry.name}")
-    print(f"HP: {character.hp}/{character.max_hp}")
+    # Changing class to demonstrate the setter
+    print("\nChanging class to Bard:")
+    character.character_class = SHADOWDARK_CLASS.BARD
+    print(f"New Class: {character.character_class.name}")
+    print(f"Class Features: {', '.join(character.class_features)}")
     print(f"Languages: {', '.join(character.languages)}")
-    print(f"Traits: {', '.join(character.traits)}")
+
+    for _ in range(5):  # Generate 5 random backgrounds
+        background = SHADOWDARK_CHARACTER.random_background()
+        print(f"Background: {background.title}")
+        print(f"Description: {background.description}")
+        print()
+
+    # You can also access a specific background
+    specific_background = SHADOWDARK_BACKGROUND.NOBLE
+    print(f"Specific Background: {specific_background.title}")
+    print(f"Description: {specific_background.description}")
